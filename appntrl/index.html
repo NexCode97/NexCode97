@@ -12,13 +12,14 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg-deep: #0f172a;
-    --bg-card: #1e293b;
-    --accent: #3b82f6;
-    --accent-light: #60a5fa;
+    --bg-deep: #080d02;
+    --bg-card: #0f1805;
+    --accent: #98f909;
+    --accent-light: #b4ff2e;
+    --accent-dark: #7acc07;
     --text: #f1f5f9;
-    --text-muted: #94a3b8;
-    --border: #334155;
+    --text-muted: #7a8c6a;
+    --border: #1a2c08;
     --radius: 12px;
     --font: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
@@ -103,7 +104,7 @@
   .btn-primary:hover {
     background: var(--accent-light);
     transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 20px rgba(152, 249, 9, 0.4);
   }
 
   .btn-outline {
@@ -136,8 +137,8 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(59, 130, 246, 0.12);
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: rgba(152, 249, 9, 0.12);
+    border: 1px solid rgba(152, 249, 9, 0.3);
     color: var(--accent-light);
     font-size: 0.8rem;
     font-weight: 600;
@@ -239,8 +240,8 @@
   }
 
   .card:hover {
-    border-color: rgba(59, 130, 246, 0.5);
-    box-shadow: 0 0 24px rgba(59, 130, 246, 0.12), 0 4px 24px rgba(0,0,0,0.3);
+    border-color: rgba(152, 249, 9, 0.5);
+    box-shadow: 0 0 24px rgba(152, 249, 9, 0.12), 0 4px 24px rgba(0,0,0,0.3);
     transform: translateY(-3px);
   }
 
@@ -260,8 +261,8 @@
   }
 
   .pain-card:hover {
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+    border-color: rgba(152, 249, 9, 0.4);
+    box-shadow: 0 0 20px rgba(152, 249, 9, 0.1);
     transform: translateY(-2px);
   }
 
@@ -293,8 +294,8 @@
   }
 
   .value-card:hover {
-    border-color: rgba(59, 130, 246, 0.5);
-    box-shadow: 0 0 28px rgba(59, 130, 246, 0.14), 0 8px 32px rgba(0,0,0,0.3);
+    border-color: rgba(152, 249, 9, 0.5);
+    box-shadow: 0 0 28px rgba(152, 249, 9, 0.14), 0 8px 32px rgba(0,0,0,0.3);
     transform: translateY(-4px);
   }
 
@@ -498,8 +499,8 @@
   .play-btn {
     width: 36px;
     height: 36px;
-    background: rgba(59, 130, 246, 0.2);
-    border: 2px solid rgba(59, 130, 246, 0.4);
+    background: rgba(152, 249, 9, 0.2);
+    border: 2px solid rgba(152, 249, 9, 0.4);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -548,12 +549,13 @@
 
   .tab-btn:hover {
     color: var(--text);
-    background: rgba(59, 130, 246, 0.08);
+    background: rgba(152, 249, 9, 0.08);
   }
 
   .tab-btn.active {
     background: var(--accent);
-    color: #fff;
+    color: #000;
+    font-weight: 700;
   }
 
   .tab-panel {
@@ -579,8 +581,8 @@
   }
 
   .module-card:hover {
-    border-color: rgba(59, 130, 246, 0.5);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.12);
+    border-color: rgba(152, 249, 9, 0.5);
+    box-shadow: 0 0 20px rgba(152, 249, 9, 0.12);
     transform: translateY(-2px);
   }
 
@@ -622,8 +624,8 @@
   }
 
   .benefit-item:hover {
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow: 0 0 16px rgba(59, 130, 246, 0.08);
+    border-color: rgba(152, 249, 9, 0.4);
+    box-shadow: 0 0 16px rgba(152, 249, 9, 0.08);
   }
 
   .benefit-check {
@@ -675,9 +677,9 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(34, 197, 94, 0.1);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    color: #4ade80;
+    background: rgba(152, 249, 9, 0.1);
+    border: 1px solid rgba(152, 249, 9, 0.3);
+    color: #98f909;
     font-size: 0.8rem;
     font-weight: 700;
     padding: 5px 12px;
@@ -711,14 +713,15 @@
   }
 
   .btn-whatsapp {
-    background: #25d366;
-    color: #fff;
+    background: #98f909;
+    color: #000;
+    font-weight: 700;
   }
 
   .btn-whatsapp:hover {
-    background: #1ebe5a;
+    background: #b4ff2e;
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
+    box-shadow: 0 4px 20px rgba(152, 249, 9, 0.4);
   }
 
   .btn-email {

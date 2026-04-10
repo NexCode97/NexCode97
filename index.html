@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NexCode97 — Cada negocio merece su propio sistema</title>
+<meta name="description" content="Desarrollo de software a la medida. Apps web, móviles, sistemas de gestión y más. Sin mensualidades."/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a14;
+    --bg-card: #0f1120;
+    --bg-card2: #131525;
+    --violet: #7c3aed;
+    --violet-light: #a78bfa;
+    --cyan: #06b6d4;
+    --cyan-light: #22d3ee;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --border: #1e2235;
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.6; }
+
+  /* GLOW BACKGROUNDS */
+  .glow-1 { position: fixed; top: -300px; left: -200px; width: 800px; height: 800px; background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 65%); pointer-events: none; z-index: 0; }
+  .glow-2 { position: fixed; bottom: -300px; right: -200px; width: 800px; height: 800px; background: radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 65%); pointer-events: none; z-index: 0; }
+
+  /* NAVBAR */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 68px;
+    background: rgba(10,10,20,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 clamp(20px, 5vw, 80px);
+  }
+
+  .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+  .nav-logo img { height: 38px; width: 38px; border-radius: 10px; }
+  .nav-logo-text { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.5px; }
+  .nav-logo-text span.w { color: #fff; }
+  .nav-logo-text span.g { background: linear-gradient(90deg, var(--violet-light), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 22px; border-radius: 8px;
+    font-family: var(--font); font-size: 0.875rem; font-weight: 600;
+    cursor: pointer; text-decoration: none; transition: all 0.2s; border: none;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--violet), var(--cyan)); color: #fff; }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(124,58,237,0.35); }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--violet-light); color: var(--violet-light); transform: translateY(-1px); }
+  .btn-lg { padding: 14px 32px; font-size: 1rem; border-radius: 10px; }
+  .btn-wa { background: #25d366; color: #fff; }
+  .btn-wa:hover { background: #1ebe5a; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,211,102,0.3); }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 1; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 60px); }
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+  .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--violet-light); margin-bottom: 12px; }
+  .section-title { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; letter-spacing: -0.03em; color: #fff; margin-bottom: 12px; }
+  .section-sub { font-size: 1rem; color: var(--muted); max-width: 520px; }
+
+  /* HERO */
+  #hero {
+    padding: 160px clamp(20px,5vw,60px) 100px;
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.25);
+    color: var(--violet-light); font-size: 0.8rem; font-weight: 600;
+    padding: 6px 16px; border-radius: 999px; margin-bottom: 28px;
+  }
+
+  .hero-h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    font-weight: 900; line-height: 1.08; letter-spacing: -0.04em;
+    color: #fff; margin-bottom: 24px;
+  }
+  .hero-h1 .grad { background: linear-gradient(135deg, var(--violet-light) 0%, var(--cyan) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .hero-sub { font-size: 1.1rem; color: var(--muted); line-height: 1.7; margin-bottom: 40px; max-width: 480px; }
+
+  .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
+
+  .hero-stats { display: flex; gap: 0; }
+  .hero-stat { padding: 6px 24px; border-right: 1px solid var(--border); }
+  .hero-stat:first-child { padding-left: 0; }
+  .hero-stat strong { display: block; font-size: 1.5rem; font-weight: 800; background: linear-gradient(90deg, var(--violet-light), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-stat span { font-size: 0.75rem; color: var(--muted); }
+
+  /* Hero right side — logo display */
+  .hero-visual {
+    display: flex; justify-content: center; align-items: center;
+    position: relative;
+  }
+  .hero-logo-wrap {
+    position: relative;
+    width: 280px; height: 280px;
+  }
+  .hero-logo-wrap::before {
+    content: '';
+    position: absolute; inset: -2px;
+    border-radius: 40px;
+    background: linear-gradient(135deg, var(--violet), var(--cyan));
+    z-index: 0;
+    opacity: 0.5;
+    filter: blur(20px);
+  }
+  .hero-logo-wrap img {
+    width: 100%; height: 100%;
+    border-radius: 36px;
+    position: relative; z-index: 1;
+    border: 1px solid rgba(124,58,237,0.2);
+  }
+
+  /* SERVICES */
+  #services { padding: 100px 0; }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px; margin-top: 48px;
+  }
+  .service-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px 26px;
+    transition: all 0.25s ease;
+  }
+  .service-card:hover {
+    border-color: rgba(124,58,237,0.4);
+    box-shadow: 0 0 28px rgba(124,58,237,0.1);
+    transform: translateY(-3px);
+  }
+  .service-icon { font-size: 1.8rem; margin-bottom: 14px; display: block; }
+  .service-name { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .service-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* PORTFOLIO */
+  #portfolio { padding: 100px 0; }
+  .portfolio-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px; margin-top: 48px;
+  }
+
+  .portfolio-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 18px; overflow: hidden;
+    text-decoration: none; color: inherit;
+    transition: all 0.3s ease; display: block;
+    position: relative;
+  }
+  .portfolio-card:hover {
+    border-color: rgba(124,58,237,0.5);
+    box-shadow: 0 0 40px rgba(124,58,237,0.15), 0 8px 40px rgba(0,0,0,0.4);
+    transform: translateY(-5px);
+  }
+  .portfolio-card:hover .card-arrow { opacity: 1; transform: translate(0,0); }
+
+  .card-header {
+    height: 180px; display: flex; align-items: center; justify-content: center;
+    background: var(--bg-card2); border-bottom: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .card-header::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(124,58,237,0.05), rgba(6,182,212,0.05));
+  }
+  .card-client-logo {
+    width: 110px; height: 110px;
+    border-radius: 22px;
+    object-fit: cover;
+    position: relative; z-index: 1;
+    border: 2px solid rgba(255,255,255,0.06);
+  }
+
+  .card-body { padding: 24px 26px; }
+  .card-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .tag {
+    font-size: 0.68rem; font-weight: 700; padding: 3px 10px;
+    border-radius: 999px; letter-spacing: 0.05em;
+  }
+  .tag-violet { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); color: var(--violet-light); }
+  .tag-cyan { background: rgba(6,182,212,0.12); border: 1px solid rgba(6,182,212,0.25); color: var(--cyan-light); }
+  .tag-green { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.25); color: #4ade80; }
+
+  .card-title { font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing: -0.02em; }
+  .card-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
+
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 16px; border-top: 1px solid var(--border);
+  }
+  .card-client { font-size: 0.8rem; color: var(--muted); }
+  .card-client strong { color: var(--text); }
+
+  .card-arrow {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    opacity: 0; transform: translate(-4px, 4px);
+    transition: all 0.25s ease;
+  }
+
+  /* Coming soon card */
+  .portfolio-card.coming-soon {
+    border-style: dashed; cursor: default;
+    opacity: 0.5;
+  }
+  .portfolio-card.coming-soon:hover { transform: none; box-shadow: none; }
+  .coming-soon-icon { font-size: 2.5rem; color: var(--muted); }
+  .coming-soon-text { font-size: 0.85rem; color: var(--muted); margin-top: 10px; text-align: center; }
+
+  /* WHY */
+  #why { padding: 100px 0; }
+  .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 20px; margin-top: 48px; }
+  .why-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 32px 28px;
+    transition: all 0.25s;
+  }
+  .why-card:hover { border-color: rgba(6,182,212,0.35); box-shadow: 0 0 24px rgba(6,182,212,0.08); transform: translateY(-3px); }
+  .why-number { font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, var(--violet-light), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; line-height: 1; }
+  .why-title { font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .why-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* CTA */
+  #contact {
+    padding: 120px clamp(20px,5vw,60px);
+    text-align: center; max-width: 700px; margin: 0 auto;
+  }
+  #contact .section-title { font-size: clamp(1.8rem, 3.5vw, 2.8rem); margin: 0 auto 16px; }
+  #contact .section-sub { margin: 0 auto 48px; text-align: center; }
+  .contact-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+  .contact-info { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+  .contact-item { display: flex; align-items: center; gap: 8px; font-size: 0.875rem; color: var(--muted); }
+  .contact-item a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .contact-item a:hover { color: var(--cyan-light); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px clamp(20px,5vw,60px);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+    position: relative; z-index: 1;
+  }
+  .footer-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .footer-logo img { height: 28px; width: 28px; border-radius: 7px; }
+  .footer-logo span { font-size: 0.9rem; font-weight: 700; color: var(--muted); }
+  .footer-right { font-size: 0.8rem; color: var(--muted); }
+
+  /* FADE IN */
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .delay-1 { transition-delay: 0.1s; }
+  .delay-2 { transition-delay: 0.2s; }
+  .delay-3 { transition-delay: 0.3s; }
+  .delay-4 { transition-delay: 0.4s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    #hero { grid-template-columns: 1fr; padding: 120px 20px 80px; gap: 40px; }
+    .hero-visual { order: -1; }
+    .hero-logo-wrap { width: 180px; height: 180px; }
+    .hero-stats { flex-wrap: wrap; gap: 12px; }
+    .hero-stat { border: none; padding: 0; }
+    .nav-links { display: none; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-1"></div>
+<div class="glow-2"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="assets/logo-nexcode.png" alt="NexCode97"/>
+    <span class="nav-logo-text"><span class="w">NexCode</span><span class="g">97</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#services">Servicios</a>
+    <a href="#portfolio">Portafolio</a>
+    <a href="#why">Nosotros</a>
+    <a href="#contact">Contacto</a>
+  </div>
+  <a href="https://wa.me/573164134212" target="_blank" class="btn btn-primary">Contactar</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero-section" style="position:relative;z-index:1;">
+  <div id="hero">
+    <div>
+      <div class="hero-badge fade-in">✦ Desarrollo de software a la medida</div>
+      <h1 class="hero-h1 fade-in delay-1">Cada negocio<br>merece su<br><span class="grad">propio sistema.</span></h1>
+      <p class="hero-sub fade-in delay-2">Construimos apps web, móviles y sistemas de gestión personalizados. Un solo pago. Sin mensualidades.</p>
+      <div class="hero-buttons fade-in delay-3">
+        <a href="#portfolio" class="btn btn-primary btn-lg">Ver portafolio</a>
+        <a href="#contact" class="btn btn-outline btn-lg">Contactar</a>
+      </div>
+      <div class="hero-stats fade-in delay-4">
+        <div class="hero-stat"><strong>3+</strong><span>Proyectos entregados</span></div>
+        <div class="hero-stat"><strong>7</strong><span>Servicios</span></div>
+        <div class="hero-stat"><strong>$0</strong><span>Mensualidades</span></div>
+      </div>
+    </div>
+    <div class="hero-visual fade-in delay-2">
+      <div class="hero-logo-wrap">
+        <img src="assets/logo-nexcode.png" alt="NexCode97 Logo"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Lo que construimos</div>
+      <h2 class="section-title">Servicios</h2>
+      <p class="section-sub">Soluciones digitales para cualquier tipo de negocio, desde cero y a tu medida.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card fade-in delay-1">
+        <span class="service-icon">💻</span>
+        <div class="service-name">Apps web a la medida</div>
+        <p class="service-desc">Sistemas y plataformas web construidas específicamente para tu negocio y sus procesos.</p>
+      </div>
+      <div class="service-card fade-in delay-2">
+        <span class="service-icon">📱</span>
+        <div class="service-name">Apps móviles</div>
+        <p class="service-desc">Aplicaciones para Android e iOS, nativas o multiplataforma, adaptadas a tus usuarios.</p>
+      </div>
+      <div class="service-card fade-in delay-3">
+        <span class="service-icon">🌐</span>
+        <div class="service-name">Páginas web y landing pages</div>
+        <p class="service-desc">Presencia digital profesional. Corporativas, de ventas o de producto — rápidas y modernas.</p>
+      </div>
+      <div class="service-card fade-in delay-1">
+        <span class="service-icon">⚙️</span>
+        <div class="service-name">Sistemas de gestión</div>
+        <p class="service-desc">Control de pedidos, producción, inventario, finanzas y más — todo en un solo lugar.</p>
+      </div>
+      <div class="service-card fade-in delay-2">
+        <span class="service-icon">🛒</span>
+        <div class="service-name">Tiendas en línea</div>
+        <p class="service-desc">Plataformas de e-commerce con carrito, pagos integrados y gestión de productos.</p>
+      </div>
+      <div class="service-card fade-in delay-3">
+        <span class="service-icon">🔗</span>
+        <div class="service-name">Integraciones</div>
+        <p class="service-desc">Conectamos tu sistema con pagos, WhatsApp, correo, Google y otras plataformas.</p>
+      </div>
+      <div class="service-card fade-in delay-1">
+        <span class="service-icon">⚡</span>
+        <div class="service-name">PWA — Apps sin tienda</div>
+        <p class="service-desc">Apps instalables directamente desde el navegador. Sin App Store, sin Play Store.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Trabajos realizados</div>
+      <h2 class="section-title">Portafolio</h2>
+      <p class="section-sub">Proyectos reales, en producción, usados por empresas reales.</p>
+    </div>
+    <div class="portfolio-grid">
+
+      <!-- APP NTRL -->
+      <a href="appntrl/" class="portfolio-card fade-in delay-1">
+        <div class="card-header">
+          <img src="assets/logo-natural.png" alt="Natural Ropa Deportiva" class="card-client-logo"/>
+        </div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-green">✓ En producción</span>
+            <span class="tag tag-violet">Sistema de gestión</span>
+            <span class="tag tag-cyan">PWA</span>
+          </div>
+          <div class="card-title">APP NTRL</div>
+          <p class="card-desc">Sistema completo de gestión para empresa de ropa deportiva. Pedidos, producción, finanzas, inventario y comunicación interna — en un solo lugar.</p>
+          <div class="card-footer">
+            <div class="card-client">Cliente: <strong>Natural Ropa Deportiva</strong></div>
+            <div class="card-arrow">→</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- PRÓXIMAMENTE -->
+      <div class="portfolio-card coming-soon fade-in delay-2">
+        <div class="card-header">
+          <div style="text-align:center">
+            <div class="coming-soon-icon">🚀</div>
+            <div class="coming-soon-text">Próximo proyecto</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="tag tag-violet">Próximamente</span></div>
+          <div class="card-title">Tu proyecto aquí</div>
+          <p class="card-desc">¿Tienes una idea o necesitas digitalizar tu negocio? Podría ser el próximo caso de éxito.</p>
+          <div class="card-footer">
+            <div class="card-client">¿Hablamos?</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHY -->
+<section id="why">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Por qué elegirnos</div>
+      <h2 class="section-title">Software que trabaja por ti</h2>
+      <p class="section-sub">No vendemos plantillas. Construimos exactamente lo que tu negocio necesita.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card fade-in delay-1">
+        <div class="why-number">01</div>
+        <div class="why-title">Pago único</div>
+        <p class="why-desc">Tu sistema corre en servidores gratuitos. Sin facturas mensuales de plataforma ni sorpresas.</p>
+      </div>
+      <div class="why-card fade-in delay-2">
+        <div class="why-number">02</div>
+        <div class="why-title">100% a la medida</div>
+        <p class="why-desc">Cada solución se construye desde cero para tu negocio específico, no adaptamos plantillas genéricas.</p>
+      </div>
+      <div class="why-card fade-in delay-3">
+        <div class="why-number">03</div>
+        <div class="why-title">Entrega rápida</div>
+        <p class="why-desc">Del caos al control — en semanas, no meses. Trabajamos con entregas iterativas para que veas avances desde el inicio.</p>
+      </div>
+      <div class="why-card fade-in delay-4">
+        <div class="why-number">04</div>
+        <div class="why-title">Soporte continuo</div>
+        <p class="why-desc">No desaparecemos después de entregar. Estamos disponibles para mejoras, actualizaciones y soporte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact-section" style="position:relative;z-index:1;">
+  <div id="contact">
+    <div class="fade-in">
+      <div class="section-label" style="text-align:center;">¿Tienes un proyecto?</div>
+      <h2 class="section-title">Hablemos de tu idea</h2>
+      <p class="section-sub">Cuéntanos qué necesitas y te mostramos cómo podemos construirlo.</p>
+    </div>
+    <div class="contact-buttons fade-in delay-1">
+      <a href="https://wa.me/573164134212" target="_blank" class="btn btn-wa btn-lg">💬 WhatsApp</a>
+      <a href="mailto:nexcode97@gmail.com" class="btn btn-outline btn-lg">✉️ Enviar correo</a>
+    </div>
+    <div class="contact-info fade-in delay-2">
+      <div class="contact-item">📧 <a href="mailto:nexcode97@gmail.com">nexcode97@gmail.com</a></div>
+      <div class="contact-item">📸 <a href="https://instagram.com/nexcode97" target="_blank">@nexcode97</a></div>
+      <div class="contact-item">📞 <a href="tel:+573164134212">+57 316 413 4212</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">
+    <img src="assets/logo-nexcode.png" alt="NexCode97"/>
+    <span>NexCode97 © 2025</span>
+  </a>
+  <div class="footer-right">Cada negocio merece su propio sistema.</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  document.querySelectorAll('#hero .fade-in').forEach(el => el.classList.add('visible'));
+</script>
+</body>
+</html>

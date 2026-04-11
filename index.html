@@ -288,9 +288,9 @@
   /* MOBILE */
   @media (max-width: 768px) {
     #hero { grid-template-columns: 1fr; padding: 100px 20px 60px; gap: 16px; }
-    .hero-visual { display: flex; justify-content: center; order: -1; }
-    .hero-canvas-wrap { width: 260px; height: 260px; }
-    #heroCanvas { width: 260px; height: 260px; }
+    .hero-visual { display: flex; justify-content: center; order: -1; width: 100%; }
+    .hero-canvas-wrap { width: 100%; height: 220px; }
+    #heroCanvas { width: 100%; height: 220px; }
     .hero-buttons { flex-wrap: wrap; gap: 10px; }
     .hero-buttons .btn-lg { padding: 12px 18px; font-size: 0.875rem; }
     .nav-links { display: none; }
@@ -534,71 +534,41 @@
     };
   }
 
-  function buildTextShape(n) {
-    const off = document.createElement('canvas');
-    off.width = W; off.height = H;
-    const octx = off.getContext('2d');
-    let fs = 60;
-    octx.font = `900 ${fs}px Arial, sans-serif`;
-    while(octx.measureText('BIENVENIDO AL FUTURO').width > W - 20 && fs > 8) {
-      fs--;
-      octx.font = `900 ${fs}px Arial, sans-serif`;
-    }
-    octx.fillStyle = '#fff';
-    octx.textAlign = 'center';
-    octx.textBaseline = 'middle';
-    octx.fillText('BIENVENIDO AL FUTURO', W/2, H/2);
-    const data = octx.getImageData(0, 0, W, H).data;
-    const pts = [];
-    for(let y=0; y<H; y+=4) for(let x=0; x<W; x+=4)
-      if(data[(y*W+x)*4+3] > 128) pts.push({x, y});
-    for(let i=pts.length-1; i>0; i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [pts[i],pts[j]]=[pts[j],pts[i]];
-    }
-    return pts.slice(0, n);
-  }
-
   const TOTAL = 120;
-  const textPts = buildTextShape(TOTAL);
   const nodes = [];
   for(let i=0;i<TOTAL;i++){
     const tx=40+Math.random()*(W-80), ty=40+Math.random()*(H-80);
     const sx=Math.random()*W, sy=Math.random()*H;
     const t=i/TOTAL, c=nodeColor(t);
     const r=Math.random()<.15?5+Math.random()*2:2+Math.random()*2;
-    const fx=textPts[i]?textPts[i].x:tx, fy=textPts[i]?textPts[i].y:ty;
-    nodes.push({sx,sy,tx,ty,fx,fy,x:sx,y:sy,r,c,
-      vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,driftX:tx,driftY:ty});
+    nodes.push({sx,sy,tx,ty,x:sx,y:sy,r,c,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5});
   }
 
   function easeOut(x){return 1-Math.pow(1-x,3);}
-  function easeInOut(x){return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;}
 
-  let phase='pixels', phaseStart=START_TIME;
+  let assembled=false;
 
   function draw(now){
     requestAnimationFrame(draw);
-    const pe=now-phaseStart;
+    const elapsed=now-START_TIME;
     ctx.clearRect(0,0,W,H);
 
-    if(phase==='pixels'&&now-START_TIME>PIXEL_PHASE_MS){phase='assemble';phaseStart=now;}
-    else if(phase==='assemble'&&pe>ASSEMBLE_MS){nodes.forEach(n=>{n.driftX=n.x;n.driftY=n.y;});phase='drift';phaseStart=now;}
-    else if(phase==='drift'&&pe>DRIFT_MS){nodes.forEach(n=>{n.driftX=n.x;n.driftY=n.y;});phase='reform';phaseStart=now;}
-    else if(phase==='reform'&&pe>REFORM_MS){phase='hold';phaseStart=now;}
-    else if(phase==='hold'&&pe>HOLD_MS){nodes.forEach(n=>{n.driftX=n.x;n.driftY=n.y;});phase='drift';phaseStart=now;}
+    const assembleP=Math.min(Math.max((elapsed-PIXEL_PHASE_MS)/ASSEMBLE_MS,0),1);
+    const ga=easeOut(assembleP);
+    if(!assembled&&assembleP>=1) assembled=true;
+
+    if(elapsed<PIXEL_PHASE_MS){
+      nodes.forEach(n=>{
+        ctx.beginPath();ctx.arc(n.sx,n.sy,1.5,0,Math.PI*2);
+        ctx.fillStyle=`rgba(${n.c.r},${n.c.g},${n.c.b},${.3+.7*Math.random()})`;ctx.fill();
+      });
+      return;
+    }
 
     nodes.forEach(n=>{
-      if(phase==='pixels'){}
-      else if(phase==='assemble'){const p=easeOut(Math.min(pe/ASSEMBLE_MS,1));n.x=n.sx+(n.tx-n.sx)*p;n.y=n.sy+(n.ty-n.sy)*p;}
-      else if(phase==='drift'){n.x+=n.vx;n.y+=n.vy;if(n.x<20||n.x>W-20)n.vx*=-1;if(n.y<20||n.y>H-20)n.vy*=-1;n.driftX=n.x;n.driftY=n.y;}
-      else if(phase==='reform'){const p=easeInOut(Math.min(pe/REFORM_MS,1));n.x=n.driftX+(n.fx-n.driftX)*p;n.y=n.driftY+(n.fy-n.driftY)*p;}
-      else if(phase==='hold'){n.x=n.fx;n.y=n.fy;}
+      if(!assembled){n.x=n.sx+(n.tx-n.sx)*easeOut(assembleP);n.y=n.sy+(n.ty-n.sy)*easeOut(assembleP);}
+      else{n.x+=n.vx;n.y+=n.vy;if(n.x<20||n.x>W-20)n.vx*=-1;if(n.y<20||n.y>H-20)n.vy*=-1;}
     });
-
-    let ga=1;
-    if(phase==='pixels'){ga=0;}
-    else if(phase==='assemble'){ga=easeOut(Math.min(pe/ASSEMBLE_MS,1));}
 
     if(phase==='pixels'){
       nodes.forEach(n=>{

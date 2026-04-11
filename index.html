@@ -113,29 +113,24 @@
   .hero-stat strong { display: block; font-size: 1.5rem; font-weight: 800; background: linear-gradient(90deg, var(--violet-light), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .hero-stat span { font-size: 0.75rem; color: var(--muted); }
 
-  /* Hero right side — logo display */
+  /* Hero right side — canvas animation */
   .hero-visual {
     display: flex; justify-content: center; align-items: center;
     position: relative;
   }
-  .hero-logo-wrap {
+  .hero-canvas-wrap {
     position: relative;
-    width: 280px; height: 280px;
+    width: 340px; height: 340px;
   }
-  .hero-logo-wrap::before {
+  .hero-canvas-wrap::before {
     content: '';
-    position: absolute; inset: -2px;
-    border-radius: 40px;
-    background: linear-gradient(135deg, var(--violet), var(--cyan));
-    z-index: 0;
-    opacity: 0.5;
-    filter: blur(20px);
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);
+    pointer-events: none;
   }
-  .hero-logo-wrap img {
-    width: 100%; height: 100%;
-    border-radius: 36px;
-    position: relative; z-index: 1;
-    border: 1px solid rgba(124,58,237,0.2);
+  #heroCanvas {
+    display: block;
   }
 
   /* SERVICES */
@@ -332,8 +327,8 @@
       </div>
     </div>
     <div class="hero-visual fade-in delay-2">
-      <div class="hero-logo-wrap">
-        <img src="assets/logo-nexcode.png" alt="NexCode97 Logo"/>
+      <div class="hero-canvas-wrap">
+        <canvas id="heroCanvas" width="340" height="340"></canvas>
       </div>
     </div>
   </div>
@@ -508,6 +503,107 @@
   </a>
   <div class="footer-right">Cada negocio merece su propio sistema.</div>
 </footer>
+
+<script>
+// ── Hero Canvas Animation (Opción A — </> shape) ──────────
+(function(){
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  const PIXEL_PHASE_MS = 2000, ASSEMBLE_MS = 4500;
+  const DRIFT_MS = 3000, REFORM_MS = 3000, HOLD_MS = 2500;
+  const START_TIME = performance.now();
+
+  function nodeColor(t) {
+    return {
+      r: Math.round(124 + (6   - 124) * t),
+      g: Math.round(58  + (182 - 58)  * t),
+      b: Math.round(237 + (212 - 237) * t)
+    };
+  }
+
+  function buildShape(n) {
+    const pts = [], cx = W/2, cy = H/2;
+    const leftTip  = {x:cx-100,y:cy}, leftTop  = {x:cx-60,y:cy-48}, leftBot  = {x:cx-60,y:cy+48};
+    const slashBot = {x:cx-15, y:cy+56}, slashTop = {x:cx+15,y:cy-56};
+    const rightTip = {x:cx+100,y:cy}, rightTop = {x:cx+60,y:cy-48}, rightBot = {x:cx+60,y:cy+48};
+    const segs = [[leftTop,leftTip,8],[leftTip,leftBot,8],[slashBot,slashTop,10],[rightTop,rightTip,8],[rightTip,rightBot,8]];
+    segs.forEach(([a,b,c])=>{
+      for(let i=0;i<c;i++){
+        const tt = c===1?0.5:i/(c-1);
+        pts.push({x:a.x+(b.x-a.x)*tt, y:a.y+(b.y-a.y)*tt});
+      }
+    });
+    while(pts.length<n) pts.push({x:cx+(Math.random()-.5)*220,y:cy+(Math.random()-.5)*180});
+    return pts.slice(0,n);
+  }
+
+  const TOTAL = 42, shapePts = buildShape(TOTAL), nodes = [];
+  for(let i=0;i<TOTAL;i++){
+    const tx=40+Math.random()*(W-80), ty=40+Math.random()*(H-80);
+    const sx=Math.random()*W, sy=Math.random()*H;
+    const t=i/TOTAL, c=nodeColor(t);
+    const r=Math.random()<.15?5+Math.random()*2:2+Math.random()*2;
+    nodes.push({sx,sy,tx,ty,fx:shapePts[i].x,fy:shapePts[i].y,x:sx,y:sy,r,c,
+      vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,driftX:tx,driftY:ty});
+  }
+
+  function easeIn(x){return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;}
+  function easeOut(x){return 1-Math.pow(1-x,3);}
+
+  let phase='pixels', phaseStart=START_TIME;
+
+  function draw(now){
+    requestAnimationFrame(draw);
+    const pe=now-phaseStart;
+    ctx.clearRect(0,0,W,H);
+
+    if(phase==='pixels'&&now-START_TIME>PIXEL_PHASE_MS){phase='assemble';phaseStart=now;}
+    else if(phase==='assemble'&&pe>ASSEMBLE_MS){nodes.forEach(n=>{n.driftX=n.x;n.driftY=n.y;});phase='drift';phaseStart=now;}
+    else if(phase==='drift'&&pe>DRIFT_MS){nodes.forEach(n=>{n.driftX=n.x;n.driftY=n.y;});phase='reform';phaseStart=now;}
+    else if(phase==='reform'&&pe>REFORM_MS){phase='hold';phaseStart=now;}
+    else if(phase==='hold'&&pe>HOLD_MS){nodes.forEach(n=>{n.driftX=n.x;n.driftY=n.y;});phase='drift';phaseStart=now;}
+
+    nodes.forEach(n=>{
+      if(phase==='pixels'){}
+      else if(phase==='assemble'){const p=easeOut(Math.min(pe/ASSEMBLE_MS,1));n.x=n.sx+(n.tx-n.sx)*p;n.y=n.sy+(n.ty-n.sy)*p;}
+      else if(phase==='drift'){n.x+=n.vx;n.y+=n.vy;if(n.x<20||n.x>W-20)n.vx*=-1;if(n.y<20||n.y>H-20)n.vy*=-1;n.driftX=n.x;n.driftY=n.y;}
+      else if(phase==='reform'){const p=easeIn(Math.min(pe/REFORM_MS,1));n.x=n.driftX+(n.fx-n.driftX)*p;n.y=n.driftY+(n.fy-n.driftY)*p;}
+      else if(phase==='hold'){n.x=n.fx;n.y=n.fy;}
+    });
+
+    let ga=1;
+    if(phase==='pixels'){ga=0;}
+    else if(phase==='assemble'){ga=Math.min(pe/ASSEMBLE_MS*1.5,1);}
+
+    if(phase==='pixels'){
+      nodes.forEach(n=>{
+        ctx.beginPath();ctx.arc(n.sx,n.sy,1.5,0,Math.PI*2);
+        ctx.fillStyle=`rgba(${n.c.r},${n.c.g},${n.c.b},${.3+.7*Math.random()})`;ctx.fill();
+      });
+      return;
+    }
+
+    for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+      const a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<100){const al=ga*(1-d/100)*.4,g=ctx.createLinearGradient(a.x,a.y,b.x,b.y);
+        g.addColorStop(0,`rgba(${a.c.r},${a.c.g},${a.c.b},${al})`);g.addColorStop(1,`rgba(${b.c.r},${b.c.g},${b.c.b},${al})`);
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=g;ctx.lineWidth=.8;ctx.stroke();}
+    }
+
+    nodes.forEach(n=>{
+      const gw=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*5);
+      gw.addColorStop(0,`rgba(${n.c.r},${n.c.g},${n.c.b},${ga*.2})`);gw.addColorStop(1,`rgba(${n.c.r},${n.c.g},${n.c.b},0)`);
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r*5,0,Math.PI*2);ctx.fillStyle=gw;ctx.fill();
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=`rgba(${n.c.r},${n.c.g},${n.c.b},${ga})`;ctx.fill();
+    });
+  }
+
+  requestAnimationFrame(draw);
+})();
+</script>
 
 <script>
   const observer = new IntersectionObserver((entries) => {

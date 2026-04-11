@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Visual Hero A — Forma final</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a14; display: flex; align-items: center; justify-content: center; height: 100vh; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+canvas.width = 520;
+canvas.height = 520;
+const W = canvas.width;
+const H = canvas.height;
+
+// ── Tiempos ────────────────────────────────────────────────
+const PIXEL_PHASE_MS  = 2000;
+const ASSEMBLE_MS     = 4500;
+const DRIFT_MS        = 3000;  // cuánto tiempo derivan libremente
+const REFORM_MS       = 3000;  // cuánto tarda en reformar la figura
+const HOLD_MS         = 2500;  // cuánto tiempo mantiene la figura
+const START_TIME = performance.now();
+
+// ── Colores ────────────────────────────────────────────────
+function nodeColor(t) {
+  const r = Math.round(124 + (6   - 124) * t);
+  const g = Math.round(58  + (182 - 58)  * t);
+  const b = Math.round(237 + (212 - 237) * t);
+  return { r, g, b };
+}
+
+// ── Figura: ícono </> definido por puntos ──────────────────
+function buildShape(n) {
+  const pts = [];
+  const cx = W / 2;
+  const cy = H / 2;
+
+  // < : dos brazos que forman un ángulo apuntando izquierda
+  const leftTip = { x: cx - 115, y: cy };
+  const leftTop = { x: cx - 70,  y: cy - 55 };
+  const leftBot = { x: cx - 70,  y: cy + 55 };
+
+  // / : línea diagonal central
+  const slashBot = { x: cx - 18, y: cy + 65 };
+  const slashTop = { x: cx + 18, y: cy - 65 };
+
+  // > : dos brazos que forman un ángulo apuntando derecha
+  const rightTip = { x: cx + 115, y: cy };
+  const rightTop = { x: cx + 70,  y: cy - 55 };
+  const rightBot = { x: cx + 70,  y: cy + 55 };
+
+  // distribuir nodos a lo largo de los segmentos
+  const segments = [
+    [leftTop, leftTip, 8],
+    [leftTip, leftBot, 8],
+    [slashBot, slashTop, 10],
+    [rightTop, rightTip, 8],
+    [rightTip, rightBot, 8],
+  ];
+
+  const totalSeg = segments.reduce((s, seg) => s + seg[2], 0);
+  let idx = 0;
+
+  segments.forEach(([a, b, count]) => {
+    for (let i = 0; i < count; i++) {
+      const tt = count === 1 ? 0.5 : i / (count - 1);
+      pts.push({
+        x: a.x + (b.x - a.x) * tt,
+        y: a.y + (b.y - a.y) * tt,
+      });
+      idx++;
+    }
+  });
+
+  // rellenar nodos restantes con puntos aleatorios alrededor
+  while (pts.length < n) {
+    pts.push({
+      x: cx + (Math.random() - 0.5) * 260,
+      y: cy + (Math.random() - 0.5) * 200,
+    });
+  }
+
+  return pts.slice(0, n);
+}
+
+// ── Nodos ──────────────────────────────────────────────────
+const TOTAL_NODES = 42;
+const shapePts = buildShape(TOTAL_NODES);
+const nodes = [];
+
+for (let i = 0; i < TOTAL_NODES; i++) {
+  const tx = 40 + Math.random() * (W - 80);
+  const ty = 40 + Math.random() * (H - 80);
+  const sx = Math.random() * W;
+  const sy = Math.random() * H;
+  const t  = i / TOTAL_NODES;
+  const c  = nodeColor(t);
+  const r  = Math.random() < 0.15 ? 5 + Math.random() * 2 : 2 + Math.random() * 2;
+  const vx = (Math.random() - 0.5) * 0.5;
+  const vy = (Math.random() - 0.5) * 0.5;
+
+  nodes.push({
+    sx, sy,
+    tx, ty,                          // destino fase ensamblaje
+    fx: shapePts[i].x,               // destino figura
+    fy: shapePts[i].y,
+    x: sx, y: sy,
+    r, c, vx, vy, t,
+    driftX: tx, driftY: ty,          // posición de deriva libre
+  });
+}
+
+// ── Easing ─────────────────────────────────────────────────
+function easeInOutCubic(x) {
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+}
+function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+
+// ── Estado ─────────────────────────────────────────────────
+// phases: 'pixels' → 'assemble' → 'drift' → 'reform' → 'hold' → 'drift' ...
+let phase = 'pixels';
+let phaseStart = START_TIME;
+
+const CONNECTION_DIST = 100;
+
+// ── Loop ───────────────────────────────────────────────────
+function draw(now) {
+  requestAnimationFrame(draw);
+  const elapsed = now - START_TIME;
+  const phaseElapsed = now - phaseStart;
+  ctx.clearRect(0, 0, W, H);
+
+  // ── Transiciones de fase ──────────────────────────────
+  if (phase === 'pixels' && elapsed > PIXEL_PHASE_MS) {
+    phase = 'assemble'; phaseStart = now;
+  } else if (phase === 'assemble' && phaseElapsed > ASSEMBLE_MS) {
+    // guardar posición actual como punto de deriva
+    nodes.forEach(n => { n.driftX = n.x; n.driftY = n.y; });
+    phase = 'drift'; phaseStart = now;
+  } else if (phase === 'drift' && phaseElapsed > DRIFT_MS) {
+    // guardar posición actual como origen del reform
+    nodes.forEach(n => { n.driftX = n.x; n.driftY = n.y; });
+    phase = 'reform'; phaseStart = now;
+  } else if (phase === 'reform' && phaseElapsed > REFORM_MS) {
+    phase = 'hold'; phaseStart = now;
+  } else if (phase === 'hold' && phaseElapsed > HOLD_MS) {
+    nodes.forEach(n => { n.driftX = n.x; n.driftY = n.y; });
+    phase = 'drift'; phaseStart = now;
+  }
+
+  // ── Mover nodos según fase ────────────────────────────
+  nodes.forEach(n => {
+    if (phase === 'pixels') {
+      // quietos en posición inicial, parpadean
+    } else if (phase === 'assemble') {
+      const p = easeOutCubic(Math.min(phaseElapsed / ASSEMBLE_MS, 1));
+      n.x = n.sx + (n.tx - n.sx) * p;
+      n.y = n.sy + (n.ty - n.sy) * p;
+    } else if (phase === 'drift') {
+      n.x += n.vx;
+      n.y += n.vy;
+      if (n.x < 20 || n.x > W - 20) n.vx *= -1;
+      if (n.y < 20 || n.y > H - 20) n.vy *= -1;
+      n.driftX = n.x;
+      n.driftY = n.y;
+    } else if (phase === 'reform') {
+      const p = easeInOutCubic(Math.min(phaseElapsed / REFORM_MS, 1));
+      n.x = n.driftX + (n.fx - n.driftX) * p;
+      n.y = n.driftY + (n.fy - n.driftY) * p;
+    } else if (phase === 'hold') {
+      n.x = n.fx;
+      n.y = n.fy;
+    }
+  });
+
+  // ── Opacidad global ───────────────────────────────────
+  let globalAlpha = 1;
+  if (phase === 'pixels') {
+    globalAlpha = 0; // se dibujan aparte
+  } else if (phase === 'assemble') {
+    globalAlpha = Math.min(phaseElapsed / ASSEMBLE_MS * 1.5, 1);
+  }
+
+  // ── Fase píxeles ──────────────────────────────────────
+  if (phase === 'pixels') {
+    nodes.forEach(n => {
+      const flicker = 0.3 + 0.7 * Math.random();
+      ctx.beginPath();
+      ctx.arc(n.sx, n.sy, 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${n.c.r},${n.c.g},${n.c.b},${flicker})`;
+      ctx.fill();
+    });
+    applyVignette();
+    return;
+  }
+
+  // ── Conexiones ────────────────────────────────────────
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      const dx = a.x - b.x, dy = a.y - b.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < CONNECTION_DIST) {
+        const alpha = globalAlpha * (1 - dist / CONNECTION_DIST) * 0.4;
+        const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+        grad.addColorStop(0, `rgba(${a.c.r},${a.c.g},${a.c.b},${alpha})`);
+        grad.addColorStop(1, `rgba(${b.c.r},${b.c.g},${b.c.b},${alpha})`);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    }
+  }
+
+  // ── Nodos ─────────────────────────────────────────────
+  nodes.forEach(n => {
+    // glow
+    const glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
+    glow.addColorStop(0, `rgba(${n.c.r},${n.c.g},${n.c.b},${globalAlpha * 0.2})`);
+    glow.addColorStop(1, `rgba(${n.c.r},${n.c.g},${n.c.b},0)`);
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2);
+    ctx.fillStyle = glow;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${n.c.r},${n.c.g},${n.c.b},${globalAlpha})`;
+    ctx.fill();
+  });
+
+  applyVignette();
+}
+
+function applyVignette() {
+  const v = ctx.createRadialGradient(W/2, H/2, W*0.2, W/2, H/2, W*0.75);
+  v.addColorStop(0, 'rgba(10,10,20,0)');
+  v.addColorStop(1, 'rgba(10,10,20,0.75)');
+  ctx.fillStyle = v;
+  ctx.fillRect(0, 0, W, H);
+}
+
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

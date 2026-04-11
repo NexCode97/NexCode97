@@ -538,11 +538,11 @@
     const off = document.createElement('canvas');
     off.width = W; off.height = H;
     const octx = off.getContext('2d');
-    let fs = 28;
-    octx.font = `900 ${fs}px 'DM Sans', sans-serif`;
-    while(octx.measureText('BIENVENIDO AL FUTURO').width > W - 30 && fs > 8) {
+    let fs = 60;
+    octx.font = `900 ${fs}px Arial, sans-serif`;
+    while(octx.measureText('BIENVENIDO AL FUTURO').width > W - 20 && fs > 8) {
       fs--;
-      octx.font = `900 ${fs}px 'DM Sans', sans-serif`;
+      octx.font = `900 ${fs}px Arial, sans-serif`;
     }
     octx.fillStyle = '#fff';
     octx.textAlign = 'center';
@@ -550,7 +550,7 @@
     octx.fillText('BIENVENIDO AL FUTURO', W/2, H/2);
     const data = octx.getImageData(0, 0, W, H).data;
     const pts = [];
-    for(let y=0; y<H; y+=3) for(let x=0; x<W; x+=3)
+    for(let y=0; y<H; y+=4) for(let x=0; x<W; x+=4)
       if(data[(y*W+x)*4+3] > 128) pts.push({x, y});
     for(let i=pts.length-1; i>0; i--){
       const j=Math.floor(Math.random()*(i+1));
@@ -559,7 +559,7 @@
     return pts.slice(0, n);
   }
 
-  const TOTAL = 55;
+  const TOTAL = 120;
   const textPts = buildTextShape(TOTAL);
   const nodes = [];
   for(let i=0;i<TOTAL;i++){

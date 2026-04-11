@@ -330,6 +330,11 @@
         <a href="#portfolio" class="btn btn-primary btn-lg">Ver portafolio</a>
         <a href="#contact" class="btn btn-outline btn-lg">Contactar</a>
       </div>
+      <div class="hero-stats fade-in delay-4">
+        <div class="hero-stat"><strong>3+</strong><span>Proyectos entregados</span></div>
+        <div class="hero-stat"><strong>7</strong><span>Servicios</span></div>
+        <div class="hero-stat"><strong>$0</strong><span>Mensualidades</span></div>
+      </div>
     </div>
     <div class="hero-visual fade-in delay-2">
       <div class="hero-canvas-wrap">
@@ -530,17 +535,32 @@
   }
 
   function buildShape(n) {
-    const pts = [], cx = W/2, cy = H/2 - 40;
-    const leftTip  = {x:cx-145,y:cy}, leftTop  = {x:cx-88,y:cy-70}, leftBot  = {x:cx-88,y:cy+70};
-    const slashBot = {x:cx-22, y:cy+82}, slashTop = {x:cx+22,y:cy-82};
-    const rightTip = {x:cx+145,y:cy}, rightTop = {x:cx+88,y:cy-70}, rightBot = {x:cx+88,y:cy+70};
-    const segs = [[leftTop,leftTip,8],[leftTip,leftBot,8],[slashBot,slashTop,10],[rightTop,rightTip,8],[rightTip,rightBot,8]];
-    segs.forEach(([a,b,c])=>{
-      for(let i=0;i<c;i++){
-        const tt = c===1?0.5:i/(c-1);
-        pts.push({x:a.x+(b.x-a.x)*tt, y:a.y+(b.y-a.y)*tt});
+    const pts = [], cx = W/2, cy = H/2 - 20;
+
+    function addSeg(seg, count) {
+      for(let i=0;i<count;i++){
+        const t=count===1?0.5:i/(count-1);
+        const pos=t*(seg.length-1), idx=Math.min(Math.floor(pos),seg.length-2), f=pos-idx;
+        const a=seg[idx],b=seg[idx+1];
+        pts.push({x:a.x+(b.x-a.x)*f, y:a.y+(b.y-a.y)*f});
       }
-    });
+    }
+
+    // Contorno hemisferio izquierdo
+    addSeg([{x:cx-5,y:cy-100},{x:cx-50,y:cy-108},{x:cx-95,y:cy-92},{x:cx-128,y:cy-55},{x:cx-138,y:cy-5},{x:cx-125,y:cy+45},{x:cx-90,y:cy+80},{x:cx-45,y:cy+92},{x:cx-5,y:cy+88}], 9);
+    // Contorno hemisferio derecho (espejo)
+    addSeg([{x:cx+5,y:cy-100},{x:cx+50,y:cy-108},{x:cx+95,y:cy-92},{x:cx+128,y:cy-55},{x:cx+138,y:cy-5},{x:cx+125,y:cy+45},{x:cx+90,y:cy+80},{x:cx+45,y:cy+92},{x:cx+5,y:cy+88}], 9);
+    // Surco central
+    addSeg([{x:cx,y:cy-100},{x:cx,y:cy+88}], 4);
+    // Pliegues izquierdo
+    addSeg([{x:cx-25,y:cy-75},{x:cx-75,y:cy-52},{x:cx-105,y:cy-15}], 4);
+    addSeg([{x:cx-18,y:cy-30},{x:cx-68,y:cy-10},{x:cx-112,y:cy+25}], 4);
+    addSeg([{x:cx-18,y:cy+25},{x:cx-62,y:cy+50},{x:cx-88,y:cy+70}], 4);
+    // Pliegues derecho
+    addSeg([{x:cx+25,y:cy-75},{x:cx+75,y:cy-52},{x:cx+105,y:cy-15}], 4);
+    addSeg([{x:cx+18,y:cy-30},{x:cx+68,y:cy-10},{x:cx+112,y:cy+25}], 4);
+    addSeg([{x:cx+18,y:cy+25},{x:cx+62,y:cy+50},{x:cx+88,y:cy+70}], 4);
+
     while(pts.length<n) pts.push({x:cx+(Math.random()-.5)*220,y:cy+(Math.random()-.5)*180});
     return pts.slice(0,n);
   }

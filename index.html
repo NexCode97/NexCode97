@@ -580,7 +580,7 @@
     };
   }
 
-  const TOTAL = 60;
+  const TOTAL = isMobile ? 40 : isTablet ? 50 : 60;
   const nodes = [];
   for(let i=0;i<TOTAL;i++){
     const tx=40+Math.random()*(W-80), ty=40+Math.random()*(H-80);

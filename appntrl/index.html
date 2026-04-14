@@ -380,7 +380,7 @@
     border: 3px solid #334155;
     border-radius: 10px 10px 0 0;
     padding: 10px;
-    width: 340px;
+    width: 480px;
   }
 
   .laptop-base {
@@ -388,7 +388,7 @@
     border: 2px solid #334155;
     border-top: none;
     height: 16px;
-    width: 340px;
+    width: 480px;
     border-radius: 0 0 8px 8px;
     margin: 0 auto;
     position: relative;
@@ -412,7 +412,7 @@
     border: 3px solid #334155;
     border-radius: 14px;
     padding: 18px 12px;
-    width: 220px;
+    width: 320px;
     position: relative;
   }
 
@@ -765,6 +765,32 @@
     font-size: 0.85rem;
   }
 
+  /* EXPAND BUTTON */
+  .expand-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 8px; padding: 6px 14px;
+    background: rgba(152,249,9,0.1); border: 1px solid rgba(152,249,9,0.3);
+    color: var(--accent-light); border-radius: 8px;
+    font-size: 0.78rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .expand-btn:hover { background: rgba(152,249,9,0.2); }
+
+  /* LIGHTBOX */
+  .lightbox {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: rgba(0,0,0,0.92); align-items: center; justify-content: center;
+  }
+  .lightbox.active { display: flex; }
+  .lightbox-inner { position: relative; width: 90vw; max-width: 900px; }
+  .lightbox-inner iframe { width: 100%; aspect-ratio: 16/9; border-radius: 10px; }
+  .lightbox-inner.vertical iframe { aspect-ratio: 9/16; max-width: 400px; margin: 0 auto; display: block; }
+  .lightbox-close {
+    position: absolute; top: -40px; right: 0;
+    background: none; border: none; color: #fff;
+    font-size: 1.8rem; cursor: pointer; line-height: 1;
+  }
+
   /* FADE IN ANIMATION */
   .fade-in {
     opacity: 0;
@@ -908,11 +934,12 @@
     <div class="device-wrap fade-in fade-in-delay-1">
       <div class="device-laptop">
         <div class="laptop-screen-outer">
-          <iframe width="100%" height="180" src="https://www.youtube.com/embed/N-JX-XXgJ-U" frameborder="0" allowfullscreen style="border-radius:4px;display:block;"></iframe>
+          <iframe width="100%" height="250" src="https://www.youtube.com/embed/l3-_zFWBYQ8" frameborder="0" allowfullscreen style="border-radius:4px;display:block;"></iframe>
         </div>
         <div class="laptop-base"></div>
       </div>
       <span class="device-label">Vista Escritorio</span>
+      <button class="expand-btn" onclick="openLightbox('https://www.youtube.com/embed/l3-_zFWBYQ8','horizontal')">⛶ Ver más grande</button>
     </div>
 
     <!-- Tablet -->
@@ -933,6 +960,7 @@
         <iframe width="100%" height="320" src="https://www.youtube.com/embed/f2uslq6cC_g" frameborder="0" allowfullscreen style="border-radius:4px;display:block;"></iframe>
       </div>
       <span class="device-label">Vista Móvil</span>
+      <button class="expand-btn" onclick="openLightbox('https://www.youtube.com/embed/f2uslq6cC_g','vertical')">⛶ Ver más grande</button>
     </div>
   </div>
 </section>
@@ -1159,6 +1187,30 @@
   document.querySelectorAll('#hero .fade-in').forEach(el => {
     el.classList.add('visible');
   });
+
+  // Lightbox
+  function openLightbox(src, orientation) {
+    const lb = document.getElementById('lightbox');
+    const inner = document.getElementById('lightbox-inner');
+    document.getElementById('lightbox-iframe').src = src + '?autoplay=1';
+    inner.className = 'lightbox-inner' + (orientation === 'vertical' ? ' vertical' : '');
+    lb.classList.add('active');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.getElementById('lightbox-iframe').src = '';
+  }
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+  });
 </script>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner" id="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <iframe id="lightbox-iframe" src="" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+  </div>
+</div>
 </body>
 </html>

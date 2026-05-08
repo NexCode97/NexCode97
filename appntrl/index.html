@@ -170,7 +170,7 @@ section{position:relative;z-index:2;}
 .demo-section{padding:80px 0;}
 .demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:52px;}
 @media(max-width:768px){.demo-grid{grid-template-columns:1fr;}}
-.demo-card{position:relative;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,rgba(124,58,237,.08) 0%,rgba(6,182,212,.04) 100%);border:1px solid rgba(124,58,237,.18);box-shadow:0 0 0 1px rgba(255,255,255,.04),0 32px 80px rgba(0,0,0,.5),0 0 60px rgba(124,58,237,.08);padding:24px 24px 0;}
+.demo-card{position:relative;border-radius:16px;overflow:visible;background:linear-gradient(135deg,rgba(124,58,237,.08) 0%,rgba(6,182,212,.04) 100%);border:1px solid rgba(124,58,237,.18);box-shadow:0 0 0 1px rgba(255,255,255,.04),0 32px 80px rgba(0,0,0,.5),0 0 60px rgba(124,58,237,.08);padding:24px 24px 0;}
 .demo-card-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--vl);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 .demo-card-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--vl);display:inline-block;}
 .browser-bar{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:10px;}
@@ -180,9 +180,10 @@ section{position:relative;z-index:2;}
 .browser-dots span:nth-child(2){background:#febc2e;}
 .browser-dots span:nth-child(3){background:#28c840;}
 .browser-url{flex:1;background:rgba(255,255,255,.06);border-radius:5px;padding:3px 10px;font-size:.65rem;color:var(--t3);font-family:var(--mono);}
-.browser-video{width:100%;height:320px;display:block;border-radius:0 0 4px 4px;object-fit:contain;background:#ffffff;}
+.browser-video-wrap{overflow:hidden;border-radius:0 0 4px 4px;background:#ffffff;}
+.browser-video{width:100%;height:320px;display:block;object-fit:contain;background:#ffffff;}
 .browser-video-scale{transform:scale(1.35);transform-origin:center center;}
-.expand-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;background:rgba(124,58,237,.1);border:1px solid var(--bv);color:var(--vl);border-radius:8px;font-family:var(--sans);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;margin:14px 0;}
+.expand-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;background:rgba(124,58,237,.1);border:1px solid var(--bv);color:var(--vl);border-radius:8px;font-family:var(--sans);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;margin:14px auto;position:relative;z-index:2;}
 .expand-btn:hover{background:rgba(124,58,237,.2);}
 
 /* Lightbox */
@@ -551,9 +552,11 @@ footer{border-top:1px solid var(--border);padding:28px clamp(20px,5vw,56px);disp
         <div class="browser-dots"><span></span><span></span><span></span></div>
         <div class="browser-url">app.ntrl.co/admin</div>
       </div>
-      <video class="browser-video browser-video-scale" autoplay muted loop playsinline>
-        <source src="assets/admi-view.mp4" type="video/mp4"/>
-      </video>
+      <div class="browser-video-wrap">
+        <video class="browser-video browser-video-scale" autoplay muted loop playsinline>
+          <source src="assets/admi-view.mp4" type="video/mp4"/>
+        </video>
+      </div>
       <button class="expand-btn" onclick="openVideoLightbox('assets/admi-view.mp4')">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg> Ver más grande
       </button>
@@ -565,9 +568,11 @@ footer{border-top:1px solid var(--border);padding:28px clamp(20px,5vw,56px);disp
         <div class="browser-dots"><span></span><span></span><span></span></div>
         <div class="browser-url">app.ntrl.co/seller</div>
       </div>
-      <video class="browser-video" autoplay muted loop playsinline>
-        <source src="assets/seller-view.mp4" type="video/mp4"/>
-      </video>
+      <div class="browser-video-wrap">
+        <video class="browser-video" autoplay muted loop playsinline>
+          <source src="assets/seller-view.mp4" type="video/mp4"/>
+        </video>
+      </div>
       <button class="expand-btn" onclick="openVideoLightbox('assets/seller-view.mp4')">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg> Ver más grande
       </button>

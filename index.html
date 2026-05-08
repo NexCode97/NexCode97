@@ -144,6 +144,53 @@
     display: block;
   }
 
+  /* BRANDS TICKER */
+  #brands { padding: 56px 0; overflow: hidden; }
+  .brands-label {
+    text-align: center;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 36px;
+  }
+  .ticker-wrap {
+    overflow: hidden; position: relative;
+  }
+  .ticker-wrap::before, .ticker-wrap::after {
+    content: ''; position: absolute;
+    top: 0; bottom: 0; width: 160px; z-index: 2; pointer-events: none;
+  }
+  .ticker-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg) 0%, transparent 100%); }
+  .ticker-wrap::after  { right: 0; background: linear-gradient(-90deg, var(--bg) 0%, transparent 100%); }
+  .ticker-track {
+    display: flex; align-items: center;
+    width: max-content;
+    animation: ticker 22s linear infinite;
+  }
+  .ticker-track:hover { animation-play-state: paused; }
+  .ticker-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 52px;
+    border-right: 1px solid var(--border);
+  }
+  .ticker-item img {
+    height: 36px; width: auto; max-width: 110px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.45;
+    transition: opacity 0.25s;
+  }
+  .ticker-item:hover img { opacity: 0.85; }
+  .ticker-item span {
+    font-size: 0.875rem; font-weight: 700;
+    color: var(--muted); white-space: nowrap;
+    transition: color 0.25s;
+  }
+  .ticker-item:hover span { color: var(--text); }
+  @keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
   /* SERVICES */
   #services { padding: 100px 0; }
   .services-grid {
@@ -354,6 +401,43 @@
     <div class="hero-visual fade-in delay-2">
       <div class="hero-canvas-wrap">
         <canvas id="heroCanvas" width="480" height="480"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BRANDS TICKER -->
+<section id="brands">
+  <p class="brands-label">Empresas que confían en NexCode97</p>
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <!-- set 1 -->
+      <div class="ticker-item">
+        <img src="assets/logo-natural.png" alt="Natural Ropa Deportiva"/>
+        <span>Natural Ropa Deportiva</span>
+      </div>
+      <div class="ticker-item">
+        <img src="assets/Logo oficial.png" alt="Guevara Sport"/>
+        <span>Guevara Sport</span>
+      </div>
+      <div class="ticker-item">
+        <img src="assets/VeloClub - Icono.png" alt="VeloClub"/>
+        <span>VeloClub</span>
+      </div>
+      <!-- set 2 — duplicado para loop seamless -->
+      <div class="ticker-item">
+        <img src="assets/logo-natural.png" alt="Natural Ropa Deportiva"/>
+        <span>Natural Ropa Deportiva</span>
+      </div>
+      <div class="ticker-item">
+        <img src="assets/Logo oficial.png" alt="Guevara Sport"/>
+        <span>Guevara Sport</span>
+      </div>
+      <div class="ticker-item">
+        <img src="assets/VeloClub - Icono.png" alt="VeloClub"/>
+        <span>VeloClub</span>
       </div>
     </div>
   </div>

@@ -673,22 +673,53 @@ window.addEventListener('scroll',()=>{
 });
 
 // ── Mega menu
-const items=document.querySelectorAll('.nav-item.has-sub');
+const megaItems=document.querySelectorAll('.nav-item.has-sub');
 const backdrop=document.getElementById('megaBackdrop');
-items.forEach(item=>{
-  const btn=item.querySelector('.nav-trigger');
-  btn.addEventListener('click',e=>{
-    e.stopPropagation();
-    const isOpen=item.classList.contains('open');
-    items.forEach(i=>{i.classList.remove('open');i.querySelector('.nav-trigger').setAttribute('aria-expanded','false');});
+let activeItem=null,closeTimer=null;
+
+function openMega(item){
+  clearTimeout(closeTimer);
+  if(activeItem&&activeItem!==item){
+    activeItem.classList.remove('open');
+    const t=activeItem.querySelector('.nav-trigger');
+    if(t)t.setAttribute('aria-expanded','false');
+  }
+  item.classList.add('open');
+  const t=item.querySelector('.nav-trigger');
+  if(t)t.setAttribute('aria-expanded','true');
+  backdrop.classList.add('active');
+  activeItem=item;
+}
+
+function closeMega(){
+  closeTimer=setTimeout(()=>{
+    if(activeItem){
+      activeItem.classList.remove('open');
+      const t=activeItem.querySelector('.nav-trigger');
+      if(t)t.setAttribute('aria-expanded','false');
+      activeItem=null;
+    }
     backdrop.classList.remove('active');
-    if(!isOpen){item.classList.add('open');btn.setAttribute('aria-expanded','true');backdrop.classList.add('active');}
-  });
+  },120);
+}
+
+megaItems.forEach(item=>{
+  item.addEventListener('mouseenter',()=>openMega(item));
+  item.addEventListener('mouseleave',closeMega);
+  const trigger=item.querySelector('.nav-trigger');
+  if(trigger){
+    trigger.addEventListener('click',()=>{
+      item.classList.contains('open')?closeMega():openMega(item);
+    });
+  }
+  const panel=item.querySelector('.mega-panel');
+  if(panel){
+    panel.addEventListener('mouseenter',()=>clearTimeout(closeTimer));
+    panel.addEventListener('mouseleave',closeMega);
+  }
 });
-document.addEventListener('click',()=>{
-  items.forEach(i=>{i.classList.remove('open');i.querySelector('.nav-trigger').setAttribute('aria-expanded','false');});
-  backdrop.classList.remove('active');
-});
+
+backdrop.addEventListener('click',()=>{closeTimer=null;closeMega();});
 
 // ── Hamburger
 const hamBtn=document.getElementById('hamBtn');

@@ -155,13 +155,13 @@ nav.scrolled{border-bottom-color:var(--bv);}
 #cinematicBg{position:absolute;top:0;left:0;width:100%;height:100%;opacity:.48;filter:brightness(.92);pointer-events:none;}
 
 /* ── HERO ─────────────────────────────────────── */
-#hero{min-height:100dvh;display:flex;align-items:center;padding:100px clamp(20px,5vw,56px) 80px;max-width:1080px;margin:0 auto;position:relative;z-index:2;}
-.hero-content{max-width:680px;}
+#hero{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:100px clamp(20px,5vw,56px) 60px;width:100%;position:relative;z-index:2;}
+.hero-content{width:100%;max-width:1200px;text-align:center;}
 .hero-badge{margin-bottom:28px;}
-.hero-h1{font-size:clamp(2.6rem,5.5vw,4.4rem);font-weight:800;line-height:1.05;letter-spacing:-.04em;color:#fff;margin-bottom:24px;}
-.hero-sub{font-size:clamp(.95rem,1.8vw,1.1rem);color:var(--t2);line-height:1.8;max-width:520px;margin-bottom:40px;font-weight:400;}
+.hero-h1{font-size:clamp(2.4rem,6.5vw,5.8rem);font-weight:800;line-height:1.05;letter-spacing:-.04em;color:#fff;margin-bottom:24px;}
+.hero-sub{font-size:clamp(.95rem,1.8vw,1.15rem);color:var(--t2);line-height:1.8;max-width:560px;margin:0 auto 40px;font-weight:400;}
 .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:56px;}
-.hero-stats{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;width:fit-content;}
+.hero-stats{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;width:fit-content;margin:0 auto;}
 .stat{padding:18px 28px;border-right:1px solid var(--border);}
 .stat:last-child{border-right:none;}
 .stat-val{font-size:1.7rem;font-weight:800;letter-spacing:-.04em;line-height:1;margin-bottom:4px;}
@@ -534,12 +534,12 @@ footer{border-top:1px solid var(--border);padding:28px clamp(20px,5vw,56px);disp
         <span class="pill"><span class="pill-dot"></span>Desarrollo de software a la medida</span>
       </div>
       <h1 class="hero-h1 reveal d1">
-        Automatiza tu empresa con<br>sistemas <span class="grad-text">100% personalizados.</span><br>Olvídate de las plantillas.
+        Automatiza tu empresa con sistemas<br><span class="grad-text">100% personalizados.</span>
       </h1>
       <p class="hero-sub reveal d2">
-        Construimos la herramienta exacta que necesitas,<br>con pago único y soporte continuo.
+        Olvídate de las plantillas. Construimos la herramienta exacta que necesitas,<br>con pago único y soporte continuo.
       </p>
-      <div class="hero-actions reveal d3">
+      <div class="hero-actions reveal d3" style="justify-content:center;">
         <a href="#portfolio" class="btn btn-grad btn-lg">Ver portafolio</a>
         <a href="#contact-section" class="btn btn-ghost btn-lg">Hablemos</a>
       </div>

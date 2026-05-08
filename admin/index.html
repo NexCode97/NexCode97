@@ -644,8 +644,15 @@ document.getElementById('btn-save-lead').addEventListener('click', async () => {
     notas: document.getElementById('lead-notas').value.trim()
   };
   if (!data.nombre) { alert('El nombre es obligatorio'); return; }
-  if (id) await sb.from('leads').update(data).eq('id', id);
-  else await sb.from('leads').insert(data);
+  let err;
+  if (id) {
+    const res = await sb.from('leads').update(data).eq('id', id);
+    err = res.error;
+  } else {
+    const res = await sb.from('leads').insert(data);
+    err = res.error;
+  }
+  if (err) { alert('Error: ' + err.message); return; }
   closeModal('modal-lead');
   await loadLeads(); await loadDashboard();
 });

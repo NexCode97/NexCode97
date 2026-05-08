@@ -114,13 +114,13 @@ nav.scrolled{border-bottom-color:var(--bv);}
 .mega-svc-name{font-size:.8rem;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:2px;}
 .mega-svc-desc{font-size:.72rem;color:var(--t2);line-height:1.4;}
 
-.mega-proj-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.mega-proj-card{border:1px solid var(--border);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;transition:border-color .2s;}
-.mega-proj-card:hover{border-color:var(--bv);}
-.mega-proj-header{height:90px;display:flex;align-items:center;justify-content:center;background:var(--bg2);position:relative;}
-.mega-proj-header img{width:52px;height:52px;border-radius:10px;object-fit:cover;}
-.mega-proj-body{padding:10px 12px;}
-.mega-proj-name{font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.mega-proj-cols{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+.mega-proj-cat-label{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.mega-proj-list{display:flex;flex-direction:column;gap:2px;}
+.mega-proj-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;text-decoration:none;color:inherit;transition:background .15s;}
+.mega-proj-item:hover{background:rgba(124,58,237,.07);}
+.mega-proj-item img{width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid rgba(255,255,255,.08);}
+.mega-proj-name{font-size:.8rem;font-weight:600;color:var(--text);line-height:1.2;}
 .mega-proj-type{font-size:.68rem;color:var(--t2);}
 
 /* overlay backdrop */
@@ -422,23 +422,33 @@ footer{border-top:1px solid var(--border);padding:28px clamp(20px,5vw,56px);disp
               <p>En producción, usados por empresas reales todos los días.</p>
               <a href="#portfolio">Ver portafolio completo →</a>
             </div>
-            <div class="mega-proj-grid">
-              <a href="appntrl/" class="mega-proj-card">
-                <div class="mega-proj-header"><img src="assets/logo-natural.png" alt="NTRL"/></div>
-                <div class="mega-proj-body"><div class="mega-proj-name">NTRL — Gestión</div><div class="mega-proj-type">Sistema de gestión · PWA</div></div>
-              </a>
-              <a href="veloclub/" class="mega-proj-card">
-                <div class="mega-proj-header"><img src="assets/VeloClub - Logo Full Mediano.jpg" alt="VeloClub"/></div>
-                <div class="mega-proj-body"><div class="mega-proj-name">VeloClub</div><div class="mega-proj-type">SaaS · PWA</div></div>
-              </a>
-              <a href="https://www.naturalropadeportiva.com.co" target="_blank" class="mega-proj-card">
-                <div class="mega-proj-header"><img src="assets/logo-natural.png" alt="Natural"/></div>
-                <div class="mega-proj-body"><div class="mega-proj-name">Natural Ropa Dep.</div><div class="mega-proj-type">Página web</div></div>
-              </a>
-              <a href="https://www.guevarasport.com" target="_blank" class="mega-proj-card">
-                <div class="mega-proj-header"><img src="assets/Logo oficial.png" alt="Guevara Sport"/></div>
-                <div class="mega-proj-body"><div class="mega-proj-name">Guevara Sport</div><div class="mega-proj-type">Página web</div></div>
-              </a>
+            <div class="mega-proj-cols">
+              <div>
+                <div class="mega-proj-cat-label">Aplicaciones</div>
+                <div class="mega-proj-list">
+                  <a href="appntrl/" class="mega-proj-item">
+                    <img src="assets/logo-natural.png" alt="NTRL"/>
+                    <div><div class="mega-proj-name">NTRL — Gestión</div><div class="mega-proj-type">Sistema de gestión · PWA</div></div>
+                  </a>
+                  <a href="veloclub/" class="mega-proj-item">
+                    <img src="assets/VeloClub - Logo Full Mediano.jpg" alt="VeloClub"/>
+                    <div><div class="mega-proj-name">VeloClub</div><div class="mega-proj-type">SaaS · PWA</div></div>
+                  </a>
+                </div>
+              </div>
+              <div>
+                <div class="mega-proj-cat-label">Páginas web</div>
+                <div class="mega-proj-list">
+                  <a href="https://www.naturalropadeportiva.com.co" target="_blank" class="mega-proj-item">
+                    <img src="assets/logo-natural.png" alt="Natural"/>
+                    <div><div class="mega-proj-name">Natural Ropa Deportiva</div><div class="mega-proj-type">Sitio corporativo</div></div>
+                  </a>
+                  <a href="https://www.guevarasport.com" target="_blank" class="mega-proj-item">
+                    <img src="assets/Logo oficial.png" alt="Guevara Sport"/>
+                    <div><div class="mega-proj-name">Guevara Sport</div><div class="mega-proj-type">Sitio corporativo</div></div>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -634,50 +644,31 @@ footer{border-top:1px solid var(--border);padding:28px clamp(20px,5vw,56px);disp
     </div>
 
     <div class="pf-group-label reveal">Aplicaciones</div>
-    <div class="pf-stack">
-      <a href="appntrl/" class="pf-lg reveal d1">
-        <div class="pf-visual">
-          <div class="pf-vis-grid"></div>
-          <div class="pf-vis-glow"></div>
-          <img src="assets/logo-natural.png" alt="Natural" class="pf-vis-logo"/>
+    <div class="pf-sm-grid">
+      <a href="appntrl/" class="pf-sm reveal d1">
+        <div class="pf-sm-head" style="background:linear-gradient(135deg,#050f02,#0e2a05);">
+          <div class="pf-sm-grid-bg"></div>
+          <img src="assets/logo-natural.png" alt="Natural" class="pf-sm-logo"/>
           <div class="pf-live">● En producción</div>
         </div>
-        <div class="pf-info">
-          <div>
-            <div class="pf-tags" style="margin-bottom:14px;">
-              <span class="tag tag-v">Sistema de gestión</span>
-              <span class="tag tag-c">PWA</span>
-            </div>
-            <div class="pf-title">NTRL — Gestión Interna</div>
-          </div>
-          <p class="pf-desc">Sistema completo para empresa de ropa deportiva. Pedidos, producción, finanzas, inventario y comunicación interna en un solo lugar. 11 módulos de administración, 3 roles de usuario.</p>
-          <div class="pf-foot">
-            <div class="pf-client">Cliente: <strong>Natural Ropa Deportiva</strong></div>
-            <div class="pf-arrow">→</div>
-          </div>
+        <div class="pf-sm-body">
+          <div class="pf-tags" style="margin-bottom:10px;"><span class="tag tag-v">Sistema de gestión</span><span class="tag tag-c">PWA</span></div>
+          <div class="pf-title" style="font-size:1rem;margin-bottom:7px;">NTRL — Gestión Interna</div>
+          <p class="pf-desc" style="font-size:.78rem;margin-bottom:14px;">ERP vertical para empresa de ropa deportiva. Pedidos, producción, finanzas y más.</p>
+          <div class="pf-foot"><div class="pf-client">Cliente: <strong>Natural Ropa Deportiva</strong></div><div class="pf-arrow">→</div></div>
         </div>
       </a>
-
-      <a href="veloclub/" class="pf-lg reveal d2">
-        <div class="pf-visual" style="background:linear-gradient(135deg,#050510,#0a0a1e);">
-          <div class="pf-vis-grid"></div>
-          <div class="pf-vis-glow" style="background:radial-gradient(ellipse at center,rgba(6,182,212,.12),transparent 70%);"></div>
-          <img src="assets/VeloClub - Logo Full Mediano.jpg" alt="VeloClub" class="pf-vis-logo"/>
+      <a href="veloclub/" class="pf-sm reveal d2">
+        <div class="pf-sm-head" style="background:linear-gradient(135deg,#050510,#0a0a1e);">
+          <div class="pf-sm-grid-bg" style="background-image:radial-gradient(rgba(6,182,212,.04) 1px,transparent 1px);"></div>
+          <img src="assets/VeloClub - Logo Full Mediano.jpg" alt="VeloClub" class="pf-sm-logo"/>
           <div class="pf-live">● En producción</div>
         </div>
-        <div class="pf-info">
-          <div>
-            <div class="pf-tags" style="margin-bottom:14px;">
-              <span class="tag tag-v">SaaS</span>
-              <span class="tag tag-c">PWA</span>
-            </div>
-            <div class="pf-title">VeloClub</div>
-          </div>
-          <p class="pf-desc">Plataforma SaaS de gestión para clubes de patinaje. Miembros, cuotas, pagos automáticos, competencias, resultados y reportes financieros. Interfaz mobile-first.</p>
-          <div class="pf-foot">
-            <div class="pf-client">Cliente: <strong>VeloClub</strong></div>
-            <div class="pf-arrow">→</div>
-          </div>
+        <div class="pf-sm-body">
+          <div class="pf-tags" style="margin-bottom:10px;"><span class="tag tag-v">SaaS</span><span class="tag tag-c">PWA</span></div>
+          <div class="pf-title" style="font-size:1rem;margin-bottom:7px;">VeloClub</div>
+          <p class="pf-desc" style="font-size:.78rem;margin-bottom:14px;">Plataforma SaaS para clubs de patinaje. Miembros, cuotas, competencias y reportes.</p>
+          <div class="pf-foot"><div class="pf-client">Cliente: <strong>VeloClub</strong></div><div class="pf-arrow">→</div></div>
         </div>
       </a>
     </div>

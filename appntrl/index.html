@@ -168,25 +168,21 @@ section{position:relative;z-index:2;}
 
 /* ── VIDEO DEMO ─────────────────────────────────── */
 .demo-section{padding:80px 0;}
-.devices-row{display:flex;align-items:flex-end;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:52px;}
-.device-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;}
-.device-label{font-size:.72rem;font-weight:600;color:var(--t2);letter-spacing:.06em;text-transform:uppercase;}
-.expand-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;background:rgba(124,58,237,.1);border:1px solid var(--bv);color:var(--vl);border-radius:8px;font-family:var(--sans);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:52px;}
+@media(max-width:768px){.demo-grid{grid-template-columns:1fr;}}
+.demo-card{position:relative;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,rgba(124,58,237,.08) 0%,rgba(6,182,212,.04) 100%);border:1px solid rgba(124,58,237,.18);box-shadow:0 0 0 1px rgba(255,255,255,.04),0 32px 80px rgba(0,0,0,.5),0 0 60px rgba(124,58,237,.08);padding:24px 24px 0;}
+.demo-card-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--vl);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.demo-card-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--vl);display:inline-block;}
+.browser-bar{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:10px;}
+.browser-dots{display:flex;gap:5px;}
+.browser-dots span{width:9px;height:9px;border-radius:50%;}
+.browser-dots span:nth-child(1){background:#ff5f57;}
+.browser-dots span:nth-child(2){background:#febc2e;}
+.browser-dots span:nth-child(3){background:#28c840;}
+.browser-url{flex:1;background:rgba(255,255,255,.06);border-radius:5px;padding:3px 10px;font-size:.65rem;color:var(--t3);font-family:var(--mono);}
+.browser-video{width:100%;display:block;border-radius:0 0 4px 4px;aspect-ratio:16/9;object-fit:cover;}
+.expand-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;background:rgba(124,58,237,.1);border:1px solid var(--bv);color:var(--vl);border-radius:8px;font-family:var(--sans);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;margin:14px 0;}
 .expand-btn:hover{background:rgba(124,58,237,.2);}
-
-/* Laptop */
-.device-laptop{display:flex;flex-direction:column;align-items:center;}
-.laptop-screen-outer{background:#1a2744;border:3px solid #334155;border-radius:10px 10px 0 0;padding:16px 16px 0;width:460px;}
-.laptop-base{background:#1a2744;border:2px solid #334155;border-radius:0 0 8px 8px;height:18px;width:480px;position:relative;}
-.laptop-base::after{content:'';position:absolute;top:4px;left:50%;transform:translateX(-50%);width:80px;height:6px;background:#0f172a;border-radius:3px;}
-/* Tablet */
-.tablet-frame{background:#1a2744;border:3px solid #334155;border-radius:14px;padding:18px 12px;width:320px;position:relative;}
-.tablet-frame::before{content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);width:30px;height:4px;background:#334155;border-radius:2px;}
-.tablet-frame::after{content:'';position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:22px;height:22px;background:#0f172a;border-radius:50%;border:2px solid #334155;}
-/* Phone */
-.phone-frame{background:#1a2744;border:3px solid #334155;border-radius:36px;padding:48px 10px;width:180px;position:relative;}
-.phone-frame::before{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:40px;height:5px;background:#334155;border-radius:3px;}
-.phone-frame::after{content:'';position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:32px;height:5px;background:#334155;border-radius:3px;}
 
 /* Lightbox */
 .lightbox{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.92);align-items:center;justify-content:center;}
@@ -545,34 +541,35 @@ footer{border-top:1px solid var(--border);padding:28px clamp(20px,5vw,56px);disp
 <!-- ═══ VIDEO DEMO ═══ -->
 <section id="demo" class="demo-section">
 <div class="container" style="text-align:center;">
-  <div class="reveal"><div class="s-label" style="justify-content:center;">Demo</div><h2 class="s-title">Míralo en acción</h2><p class="s-sub" style="margin:0 auto 0;text-align:center;">APP NTRL desde cualquier dispositivo</p></div>
-  <div class="devices-row">
-    <!-- Laptop -->
-    <div class="device-wrap reveal d1">
-      <div class="device-laptop">
-        <div class="laptop-screen-outer">
-          <iframe width="100%" height="220" src="https://www.youtube.com/embed/l3-_zFWBYQ8" frameborder="0" allowfullscreen style="border-radius:4px;display:block;"></iframe>
-        </div>
-        <div class="laptop-base"></div>
+  <div class="reveal"><div class="s-label" style="justify-content:center;">Demo</div><h2 class="s-title">Míralo en acción</h2><p class="s-sub" style="margin:0 auto 16px;text-align:center;">Vista real de la plataforma — sin filtros</p></div>
+  <div class="demo-grid">
+    <!-- Admin View -->
+    <div class="demo-card reveal d1">
+      <div class="demo-card-label">Panel Admin</div>
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">app.ntrl.co/admin</div>
       </div>
-      <span class="device-label">Vista Escritorio</span>
-      <button class="expand-btn" onclick="openLightbox('https://www.youtube.com/embed/l3-_zFWBYQ8','horizontal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg> Ver más grande</button>
+      <video class="browser-video" autoplay muted loop playsinline>
+        <source src="assets/admi-view.mp4" type="video/mp4"/>
+      </video>
+      <button class="expand-btn" onclick="openVideoLightbox('assets/admi-view.mp4')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg> Ver más grande
+      </button>
     </div>
-    <!-- Tablet -->
-    <div class="device-wrap reveal d2">
-      <div class="tablet-frame">
-        <iframe width="100%" height="150" src="https://www.youtube.com/embed/vOA8MYbOQ44" frameborder="0" allowfullscreen style="border-radius:4px;display:block;"></iframe>
+    <!-- Seller View -->
+    <div class="demo-card reveal d2">
+      <div class="demo-card-label">Panel Vendedor</div>
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">app.ntrl.co/seller</div>
       </div>
-      <span class="device-label">Vista Tablet</span>
-      <button class="expand-btn" onclick="openLightbox('https://www.youtube.com/embed/vOA8MYbOQ44','horizontal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg> Ver más grande</button>
-    </div>
-    <!-- Phone -->
-    <div class="device-wrap reveal d3">
-      <div class="phone-frame">
-        <iframe width="100%" height="290" src="https://www.youtube.com/embed/f2uslq6cC_g" frameborder="0" allowfullscreen style="border-radius:4px;display:block;"></iframe>
-      </div>
-      <span class="device-label">Vista Móvil</span>
-      <button class="expand-btn" onclick="openLightbox('https://www.youtube.com/embed/f2uslq6cC_g','vertical')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg> Ver más grande</button>
+      <video class="browser-video" autoplay muted loop playsinline>
+        <source src="assets/seller-view.mp4" type="video/mp4"/>
+      </video>
+      <button class="expand-btn" onclick="openVideoLightbox('assets/seller-view.mp4')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg> Ver más grande
+      </button>
     </div>
   </div>
 </div>
@@ -690,7 +687,8 @@ footer{border-top:1px solid var(--border);padding:28px clamp(20px,5vw,56px);disp
 <div class="lightbox" id="lightbox">
   <div class="lightbox-inner" id="lightbox-inner">
     <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-    <iframe id="lightbox-iframe" src="" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+    <iframe id="lightbox-iframe" src="" frameborder="0" allowfullscreen allow="autoplay" style="display:none;"></iframe>
+    <video id="lightbox-video" controls style="display:none;width:100%;border-radius:10px;"></video>
   </div>
 </div>
 
@@ -783,13 +781,28 @@ function switchTab(panel,e){
 function openLightbox(src,orientation){
   const lb=document.getElementById('lightbox');
   const inner=document.getElementById('lightbox-inner');
+  document.getElementById('lightbox-iframe').style.display='block';
+  document.getElementById('lightbox-video').style.display='none';
   document.getElementById('lightbox-iframe').src=src+'?autoplay=1';
   inner.className='lightbox-inner'+(orientation==='vertical'?' vertical':'');
+  lb.classList.add('active');
+}
+function openVideoLightbox(src){
+  const lb=document.getElementById('lightbox');
+  const inner=document.getElementById('lightbox-inner');
+  const vid=document.getElementById('lightbox-video');
+  document.getElementById('lightbox-iframe').style.display='none';
+  vid.style.display='block';
+  vid.src=src;
+  vid.play();
+  inner.className='lightbox-inner';
   lb.classList.add('active');
 }
 function closeLightbox(){
   document.getElementById('lightbox').classList.remove('active');
   document.getElementById('lightbox-iframe').src='';
+  const vid=document.getElementById('lightbox-video');
+  vid.pause(); vid.src='';
 }
 document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLightbox();});
 </script>

@@ -377,20 +377,17 @@ tr:hover td{background:rgba(255,255,255,.02);}
         <div class="form-group"><label class="form-label">Email</label><input type="email" id="lead-email" class="form-input" placeholder="juan@empresa.com"/></div>
         <div class="form-group"><label class="form-label">Teléfono</label>
           <div style="display:flex;gap:6px;">
-            <select id="lead-tel-codigo" class="form-select" style="width:110px;flex-shrink:0;">
-              <option value="+57">🇨🇴 +57</option>
-              <option value="+1">🇺🇸 +1</option>
-              <option value="+52">🇲🇽 +52</option>
-              <option value="+54">🇦🇷 +54</option>
-              <option value="+56">🇨🇱 +56</option>
-              <option value="+51">🇵🇪 +51</option>
-              <option value="+58">🇻🇪 +58</option>
-              <option value="+593">🇪🇨 +593</option>
-              <option value="+34">🇪🇸 +34</option>
-              <option value="+44">🇬🇧 +44</option>
-              <option value="+49">🇩🇪 +49</option>
-              <option value="+55">🇧🇷 +55</option>
-            </select>
+            <input type="hidden" id="lead-tel-codigo" value="+57"/>
+            <div id="tel-dropdown" style="position:relative;flex-shrink:0;">
+              <button type="button" id="tel-dropdown-btn" style="display:flex;align-items:center;gap:6px;height:40px;padding:0 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;white-space:nowrap;font-size:13px;min-width:90px;">
+                <img id="tel-flag" src="https://flagcdn.com/w20/co.png" width="20" height="14" style="border-radius:2px;object-fit:cover;"/>
+                <span id="tel-code-label">+57</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-left:2px;opacity:.6"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div id="tel-dropdown-list" style="display:none;position:absolute;top:44px;left:0;z-index:999;background:var(--surface2);border:1px solid var(--border);border-radius:8px;min-width:160px;max-height:240px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.4);">
+                <!-- populated by JS -->
+              </div>
+            </div>
             <input type="text" id="lead-telefono" class="form-input" placeholder="300 000 0000" style="flex:1;"/>
           </div>
         </div>
@@ -512,6 +509,62 @@ tr:hover td{background:rgba(255,255,255,.02);}
 </div>
 
 <script>
+// ── PHONE COUNTRY DROPDOWN ────────────────────────
+const COUNTRIES = [
+  {code:'+57',iso:'co',name:'Colombia'},
+  {code:'+1',iso:'us',name:'Estados Unidos'},
+  {code:'+52',iso:'mx',name:'México'},
+  {code:'+54',iso:'ar',name:'Argentina'},
+  {code:'+56',iso:'cl',name:'Chile'},
+  {code:'+51',iso:'pe',name:'Perú'},
+  {code:'+58',iso:'ve',name:'Venezuela'},
+  {code:'+593',iso:'ec',name:'Ecuador'},
+  {code:'+34',iso:'es',name:'España'},
+  {code:'+44',iso:'gb',name:'Reino Unido'},
+  {code:'+49',iso:'de',name:'Alemania'},
+  {code:'+55',iso:'br',name:'Brasil'},
+  {code:'+507',iso:'pa',name:'Panamá'},
+  {code:'+506',iso:'cr',name:'Costa Rica'},
+  {code:'+502',iso:'gt',name:'Guatemala'},
+];
+
+function initTelDropdown() {
+  const list = document.getElementById('tel-dropdown-list');
+  if (!list) return;
+  list.innerHTML = COUNTRIES.map(c=>`
+    <div class="tel-opt" data-code="${c.code}" data-iso="${c.iso}" style="display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;font-size:13px;color:var(--text);">
+      <img src="https://flagcdn.com/w20/${c.iso}.png" width="20" height="14" style="border-radius:2px;object-fit:cover;flex-shrink:0;"/>
+      <span style="opacity:.5;min-width:36px;">${c.code}</span>
+      <span>${c.name}</span>
+    </div>`).join('');
+
+  list.querySelectorAll('.tel-opt').forEach(opt=>{
+    opt.addEventListener('mouseenter',()=>opt.style.background='var(--surface3)');
+    opt.addEventListener('mouseleave',()=>opt.style.background='');
+    opt.addEventListener('click',()=>{
+      const code = opt.dataset.code, iso = opt.dataset.iso;
+      document.getElementById('lead-tel-codigo').value = code;
+      document.getElementById('tel-code-label').textContent = code;
+      document.getElementById('tel-flag').src = `https://flagcdn.com/w20/${iso}.png`;
+      list.style.display='none';
+    });
+  });
+
+  document.getElementById('tel-dropdown-btn').addEventListener('click',e=>{
+    e.stopPropagation();
+    list.style.display = list.style.display==='none' ? 'block' : 'none';
+  });
+  document.addEventListener('click',()=>list.style.display='none');
+}
+
+function setTelDropdown(code) {
+  const c = COUNTRIES.find(x=>x.code===code) || COUNTRIES[0];
+  document.getElementById('lead-tel-codigo').value = c.code;
+  document.getElementById('tel-code-label').textContent = c.code;
+  document.getElementById('tel-flag').src = `https://flagcdn.com/w20/${c.iso}.png`;
+}
+
+// ── SUPABASE ───────────────────────────────────────
 const SUPA_URL = 'https://eshdkxfalahxoudedogh.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzaGRreGZhbGFoeG91ZGVkb2doIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNDg5NTIsImV4cCI6MjA5MzgyNDk1Mn0.Fa8LkhPS43CbUtYOpDZ93BYN1NfQnTJRkXLCViyQfcA';
 const { createClient } = supabase;
@@ -526,6 +579,7 @@ sb.auth.onAuthStateChange((event, session) => {
     loginScreen.style.display = 'none';
     app.style.display = 'block';
     document.getElementById('user-email-display').textContent = session.user.email;
+    initTelDropdown();
     loadDashboard();
     loadLeads();
     loadProyectos();
@@ -668,7 +722,7 @@ document.getElementById('btn-add-lead').addEventListener('click', () => {
   document.getElementById('modal-lead-title').textContent = 'Nuevo lead';
   document.getElementById('lead-id').value = '';
   ['nombre','empresa','email','telefono','notas','ciudad'].forEach(f=>document.getElementById('lead-'+f).value='');
-  document.getElementById('lead-tel-codigo').value='+57';
+  setTelDropdown('+57');
   document.getElementById('lead-departamento').value='';
   document.getElementById('lead-fuente').value='';
   document.getElementById('lead-estado').value='Nuevo';
@@ -686,10 +740,10 @@ function editLead(id) {
   // separar código de país del número
   const telMatch = (l.telefono||'').match(/^(\+\d+)\s*(.*)$/);
   if (telMatch) {
-    document.getElementById('lead-tel-codigo').value = telMatch[1];
+    setTelDropdown(telMatch[1]);
     document.getElementById('lead-telefono').value = telMatch[2];
   } else {
-    document.getElementById('lead-tel-codigo').value = '+57';
+    setTelDropdown('+57');
     document.getElementById('lead-telefono').value = l.telefono||'';
   }
   document.getElementById('lead-departamento').value = l.departamento||'';

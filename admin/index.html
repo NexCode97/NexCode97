@@ -455,7 +455,11 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <input type="hidden" id="proy-id"/>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Nombre *</label><input type="text" id="proy-nombre" class="form-input" placeholder="App para cliente X"/></div>
-        <div class="form-group"><label class="form-label">Cliente</label><input type="text" id="proy-cliente" class="form-input" placeholder="Nombre del cliente"/></div>
+        <div class="form-group"><label class="form-label">Cliente (Lead)</label>
+          <select id="proy-cliente" class="form-select">
+            <option value="">— Seleccionar lead —</option>
+          </select>
+        </div>
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Estado</label>
@@ -463,7 +467,27 @@ tr:hover td{background:rgba(255,255,255,.02);}
             <option>En desarrollo</option><option>Entregado</option><option>Mantenimiento</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Tecnologías</label><input type="text" id="proy-tech" class="form-input" placeholder="React, Node.js..."/></div>
+        <div class="form-group"><label class="form-label">Tipo de app</label>
+          <select id="proy-tech" class="form-select">
+            <option value="">— Seleccionar —</option>
+            <option>ERP</option><option>SaaS</option><option>Gaming</option>
+            <option>E-commerce</option><option>App móvil</option><option>Página web</option>
+            <option>Dashboard / Admin</option><option>API / Backend</option><option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Sector</label>
+          <select id="proy-sector" class="form-select">
+            <option value="">— Seleccionar —</option>
+            <option>Confección / Moda</option><option>Educación</option><option>Salud</option>
+            <option>Tecnología</option><option>Comercio / Retail</option><option>Alimentos</option>
+            <option>Construcción</option><option>Transporte / Logística</option>
+            <option>Servicios financieros</option><option>Turismo / Hospitalidad</option>
+            <option>Agropecuario</option><option>Entretenimiento</option>
+            <option>Gobierno / Público</option><option>ONG / Social</option><option>Otro</option>
+          </select>
+        </div>
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Precio total (COP)</label><input type="number" id="proy-precio" class="form-input" placeholder="0"/></div>
@@ -893,10 +917,19 @@ document.getElementById('proy-filters').addEventListener('click', e => {
   renderProyectos();
 });
 
+function populateProyClientes(selectedVal='') {
+  const sel = document.getElementById('proy-cliente');
+  sel.innerHTML = '<option value="">— Seleccionar lead —</option>' +
+    cachedLeads.map(l=>`<option value="${l.nombre}"${l.nombre===selectedVal?' selected':''}>${l.nombre}${l.empresa?' — '+l.empresa:''}</option>`).join('');
+}
+
 document.getElementById('btn-add-proyecto').addEventListener('click', () => {
   document.getElementById('modal-proy-title').textContent = 'Nuevo proyecto';
   document.getElementById('proy-id').value = '';
-  ['nombre','cliente','tech','precio','pagado','notas'].forEach(f=>document.getElementById('proy-'+f).value='');
+  ['nombre','precio','pagado','notas'].forEach(f=>document.getElementById('proy-'+f).value='');
+  populateProyClientes();
+  document.getElementById('proy-tech').value='';
+  document.getElementById('proy-sector').value='';
   document.getElementById('proy-estado').value='En desarrollo';
   document.getElementById('proy-inicio').value='';
   document.getElementById('proy-entrega').value='';
@@ -909,9 +942,10 @@ function editProy(id) {
   document.getElementById('modal-proy-title').textContent = 'Editar proyecto';
   document.getElementById('proy-id').value = p.id;
   document.getElementById('proy-nombre').value = p.nombre||'';
-  document.getElementById('proy-cliente').value = p.cliente||'';
+  populateProyClientes(p.cliente||'');
   document.getElementById('proy-estado').value = p.estado||'En desarrollo';
   document.getElementById('proy-tech').value = p.tecnologias||'';
+  document.getElementById('proy-sector').value = p.sector||'';
   document.getElementById('proy-precio').value = p.precio||'';
   document.getElementById('proy-pagado').value = p.pagado||'';
   document.getElementById('proy-inicio').value = p.fecha_inicio||'';
@@ -930,9 +964,10 @@ document.getElementById('btn-save-proy').addEventListener('click', async () => {
   const id = document.getElementById('proy-id').value;
   const data = {
     nombre: document.getElementById('proy-nombre').value.trim(),
-    cliente: document.getElementById('proy-cliente').value.trim(),
+    cliente: document.getElementById('proy-cliente').value,
     estado: document.getElementById('proy-estado').value,
-    tecnologias: document.getElementById('proy-tech').value.trim(),
+    tecnologias: document.getElementById('proy-tech').value,
+    sector: document.getElementById('proy-sector').value,
     precio: parseFloat(document.getElementById('proy-precio').value)||0,
     pagado: parseFloat(document.getElementById('proy-pagado').value)||0,
     fecha_inicio: document.getElementById('proy-inicio').value||null,
